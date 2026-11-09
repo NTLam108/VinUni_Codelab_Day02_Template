@@ -155,19 +155,25 @@ Chọn **top 3 bài toán** từ danh sách trên và hoàn thiện **3 Quick Pr
 # 🏁 Phase 5 — EVALUATE (Nhóm, 20 min)
 
 ### AI Readiness Checklist:
-1. [ ] Chúng tôi có sẵn dữ liệu mẫu/logs sạch để test?
-2. [ ] Rủi ro khi AI sai có nằm trong tầm kiểm soát (qua HITL hoặc Fallback)?
-3. [ ] Stakeholders sẵn sàng thay đổi quy trình làm việc cũ?
+1. [X] Chúng tôi có sẵn dữ liệu mẫu/logs sạch để test? *(Kho hơn 1,2 triệu ticket lịch sử giải quyết trong 5 năm của Vinhomes Resident)*
+2. [X] Rủi ro khi AI sai có nằm trong tầm kiểm soát (qua HITL hoặc Fallback)? *(Thẻ [DRAFT_ONLY] 100%, 1-click approve, tự động fallback về CSKH L1 khi confidence < 90%)*
+3. [X] Stakeholders sẵn sàng thay đổi quy trình làm việc cũ? *(Đội CSKH L1 và Ban Quản lý ủng hộ mạnh mẽ để giảm tải 70% thao tác thủ công)*
 
 ### Quyết định cuối cùng của Ban Giám Đốc Vin Smart Future:
-[ ] **GO (Bắt đầu xây dựng Prototype):** Bắt đầu phát triển với scope hẹp.
+[X] **GO (Bắt đầu xây dựng Prototype):** Bắt đầu phát triển với scope hẹp (Pilot tại Vinhomes Ocean Park).
 [ ] **NOT YET (Cần tích lũy thêm dữ liệu/xác lập baseline):** Trì hoãn để chuẩn bị thêm.
 [ ] **NO-GO (Không khả thi / Rule-based tốt hơn):** Hủy bỏ dự án AI này.
 
 **Justification (Lý giải quyết định dựa trên bằng chứng kỹ thuật và chi phí):**
-> *Viết lý giải chi tiết tại đây*
+> **1. Bằng chứng kỹ thuật thực nghiệm:** Bản mẫu Prompt Prototype (Phase 4) chạy trên Gemini Flash xử lý chỉ mất **1.2 – 2.5s/ticket**, vượt qua **100% (4/4) bài kiểm tra tấn công đối kháng (Adversarial stress-test)**: bảo toàn thẻ `[DRAFT_ONLY]`, từ chối đền bù trái phép, tự động kích hoạt luồng Khẩn cấp `EMERGENCY` khi chập cháy điện, và chống Jailbreak thành công.
+> 
+> **2. Hiệu quả tài chính vượt trội (ROI > 500%):** Tiết kiệm **15 – 25 tỷ VNĐ/năm** chi phí nhân sự CSKH L1 toàn quốc, trong khi chi phí API inference Gemini Flash chỉ tốn khoảng **~35 – 50 USD/tháng (~1,2 triệu VNĐ/tháng)**. Thời gian hoàn vốn dưới 2 tháng.
+> 
+> **3. Rủi ro được kiểm soát tuyệt đối:** Con người luôn nằm trong luồng duyệt (Human-in-the-Loop) và tự động Fallback về quy trình cũ khi có nghi ngờ, đảm bảo không ảnh hưởng đến trải nghiệm của cư dân.
+> 
+> *(Xem chi tiết đầy đủ tại file [03-ai-log.md](03-ai-log.md))*
 
 ---
 
 # 📝 Phase 6 — REFLECTION (Cá nhân)
-*Ghi nhận phản ánh của cá nhân bạn về việc phối hợp với AI trong buổi học hôm nay vào file `03-ai-log.md`.*
+*Chi tiết toàn bộ nhật ký phản ánh quá trình phối hợp với AI (AI đã giúp gì, sai ở đâu, con người can thiệp thế nào, bài học rút ra) đã được ghi nhận chi tiết, đầy đủ tại file [`03-ai-log.md`](03-ai-log.md).*
