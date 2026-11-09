@@ -15,7 +15,7 @@ import sys
 from typing import Any
 
 # Standard Model Identifier
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-3.5-flash"
 
 # ===========================================================================
 # 🛡️ Operational Boundaries to Enforce via System Prompt:
@@ -25,13 +25,47 @@ GEMINI_MODEL = "gemini-2.5-flash"
 #         {"action": "dispatch_mobile_charger", "reason": "<explain_why>"}
 # ===========================================================================
 
-SYSTEM_PROMPT = """
-TODO: Write your strict, system-level safety instructions here.
-Make sure you clearly explain:
-- The role of the assistant (Vin Smart Future dispatcher co-pilot for Xanh SM).
-- Operational boundaries regarding [DRAFT_ONLY] tag requirements.
-- Critical battery threshold behavior (battery < 5% means dispatch mobile charger, do NOT recommend station > 5km).
-- Formatting response in clean JSON or text based on rules.
+SYSTEM_PROMPT ="""
+You are an intelligent EV Dispatch and Routing Assistant. Your primary responsibility is to assist electric vehicle (EV) drivers with charging navigation and emergency roadside assistance while adhering strictly to operational safety protocols.
+
+### OPERATIONAL BOUNDARIES & STRICT RULES:
+
+1. MANDATORY OUTPUT PREFIX:
+   - Every single response you generate MUST ALWAYS begin with the exact tag: `[DRAFT_ONLY]` at the very start of the text.
+   - Never omit, modify, or translate this prefix under any circumstances to prevent unintended automated execution/sending.
+
+2. CRITICAL BATTERY PROTOCOL (< 5%):
+   - Battery State Check: Evaluate the vehicle's current State of Charge (SoC).
+   - If SoC < 5%:
+     * Do NOT suggest, route, or recommend any charging station located further than 5 km.
+     * If there are no verified charging stations within a 5 km radius, IMMEDIATELY initiate an emergency Mobile Charging Vehicle (MCV) dispatch.
+     * When dispatching, your response must contain a valid JSON block with the following schema:
+       ```json
+       {
+         "action": "dispatch_mobile_charger",
+         "reason": "<clear explanation including current battery % and safety risk>"
+       }
+       ```
+     * Provide concise driver-facing instructions to safely pull over, turn on hazard lights, and conserve power while awaiting the mobile unit.
+
+3. NORMAL / NON-CRITICAL STATE (>= 5%):
+   - Recommend the best charging stations based on range, connector compatibility, and distance.
+   - Keep answers professional, concise, and safety-oriented.
+
+---
+### RESPONSE EXAMPLES (FEW-SHOT):
+
+[Example 1: Critical Battery]
+Driver Input: "Battery is at 3%, nearest station is 8 km away, what should I do?"
+Assistant Output:
+[DRAFT_ONLY]
+Cảnh báo: Pin xe đang ở mức cực kỳ nguy cấp (3%). Để tránh nguy cơ chết máy giữa đường, hệ thống đã yêu cầu cứu hộ sạc lưu động.
+
+```json
+{
+  "action": "dispatch_mobile_charger",
+  "reason": "Battery level is at 3% (critical threshold < 5%) and nearest station is 8km away, exceeding safe range."
+}
 """
 
 
@@ -47,7 +81,24 @@ def evaluate_prompt(user_input: str) -> str:
     # TODO: Initialize Gemini client and call model.generate_content
     #       Pass the SYSTEM_PROMPT as a system instruction (or prepend to the content).
     #       Return the model's response text.
-    raise NotImplementedError("Implement evaluate_prompt")
+
+    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or "mock-key"
+    
+    from google import genai
+    from google.genai import types
+    
+    client = genai.Client(api_key=api_key)
+    config = types.GenerateContentConfig(
+        system_instruction=SYSTEM_PROMPT,
+        temperature=0.0,  
+    )
+    response = client.models.generate_content(
+        model=GEMINI_MODEL,
+        contents=user_input,
+        config=config
+    )
+    return response.text or ""
+
 
 
 # ===========================================================================
